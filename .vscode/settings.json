@@ -6,10 +6,12 @@
 	"idf.customExtraVars": {
 		"IDF_TARGET": "esp32"
 	},
-	"idf.portWin": "COM5",
 	"files.associations": {
 		"message_buffer.h": "c",
-		"task.h": "c"
+		"task.h": "c",
+		"inttypes.h": "c",
+		"freertos.h": "c"
 	},
-	"idf.port": "/dev/ttyUSB0"
+	"idf.port": "/dev/ttyUSB0",
+	"idf.portWin": "COM5"
 }

@@ -19,3 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+This project also includes third-party code licensed under the BSD 3-Clause License:
+
+hx711.c, hx711.h — Copyright (c) 2019 Ruslan V. Uss <unclerus@gmail.com>
+BSD 3-Clause License applies to these files.

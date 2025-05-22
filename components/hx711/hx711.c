@@ -31,6 +31,8 @@
  * ESP-IDF driver for HX711 24-bit ADC for weigh scales
  *
  * Copyright (c) 2019 Ruslan V. Uss <unclerus@gmail.com>
+ * 
+ * Modifications made by Thales S. Rodrigues, 2025
  *
  * BSD Licensed as described in the file LICENSE
  */
