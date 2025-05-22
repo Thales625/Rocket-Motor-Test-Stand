@@ -3,6 +3,12 @@ build/
 sdkconfig
 sdkconfig.old
 
+# project
+tools/*/settings.json
+
+# python
+__pycache__/
+
 # Prerequisites
 *.d
 
