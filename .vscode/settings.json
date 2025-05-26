@@ -10,7 +10,10 @@
 		"message_buffer.h": "c",
 		"task.h": "c",
 		"inttypes.h": "c",
-		"freertos.h": "c"
+		"freertos.h": "c",
+		"circular_buffer.h": "c",
+		"http_server.h": "c",
+		"websocket.h": "c"
 	},
 	"idf.port": "/dev/ttyUSB0",
 	"idf.portWin": "COM5"

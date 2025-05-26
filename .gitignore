@@ -1,6 +1,5 @@
 # esp-idf
 build/
-sdkconfig
 sdkconfig.old
 
 # project
