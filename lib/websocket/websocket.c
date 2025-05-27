@@ -35,10 +35,10 @@ static esp_err_t websocket_handler(httpd_req_t *req) {
 			ESP_LOGW(TAG, "Max clients reached. Connection rejected");
 		}
 		xSemaphoreGive(clients_mutex);
-
 		return ESP_OK;
 	}
-
+	return ESP_OK;
+	/*
 	printf("client fd: %d\n", client_fd);
 
 	uint8_t buffer[WS_BUFFER_SIZE] = {0};
@@ -62,6 +62,7 @@ static esp_err_t websocket_handler(httpd_req_t *req) {
 	snprintf(message, sizeof(message), "(%d): %s", client_fd, (const char *)buffer);
 
 	return websocket_broadcast(message);
+	*/
 }
 
 esp_err_t websocket_broadcast(const char *data) {
