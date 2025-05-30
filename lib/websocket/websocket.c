@@ -38,31 +38,6 @@ static esp_err_t websocket_handler(httpd_req_t *req) {
 		return ESP_OK;
 	}
 	return ESP_OK;
-	/*
-	printf("client fd: %d\n", client_fd);
-
-	uint8_t buffer[WS_BUFFER_SIZE] = {0};
-
-	httpd_ws_frame_t ws_pkt = {
-		.type = HTTPD_WS_TYPE_TEXT,
-		.payload = buffer
-	};
-
-	esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, sizeof(buffer));
-	if (ret != ESP_OK) {
-		ESP_LOGE(TAG, "WebSocket recv error: %s", esp_err_to_name(ret));
-		return ret;
-	}
-
-	buffer[ws_pkt.len] = 0; // null-terminate
-	ESP_LOGI(TAG, "Received '%s'", buffer);
-
-	char message[WS_BUFFER_SIZE];
-
-	snprintf(message, sizeof(message), "(%d): %s", client_fd, (const char *)buffer);
-
-	return websocket_broadcast(message);
-	*/
 }
 
 esp_err_t websocket_broadcast(const char *data) {
@@ -75,7 +50,7 @@ esp_err_t websocket_broadcast(const char *data) {
 		.final = true
 	};
 
-	// send message mutex
+	// send message
 	xSemaphoreTake(clients_mutex, portMAX_DELAY);
 	for (size_t i=0; i<client_index; i++) {
 		if (httpd_ws_send_frame_async(ws_server, clients[i], &ws_pkt) != ESP_OK) {

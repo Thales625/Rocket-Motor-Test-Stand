@@ -13,7 +13,14 @@
 		"freertos.h": "c",
 		"circular_buffer.h": "c",
 		"http_server.h": "c",
-		"websocket.h": "c"
+		"websocket.h": "c",
+		"esp_vfs_fat.h": "c",
+		"spi_common.h": "c",
+		"stdio.h": "c",
+		"list": "c",
+		"format": "c",
+		"functional": "c",
+		"esp_err.h": "c"
 	},
 	"idf.port": "/dev/ttyUSB0",
 	"idf.portWin": "COM5"

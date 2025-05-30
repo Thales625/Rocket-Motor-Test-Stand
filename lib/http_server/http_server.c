@@ -31,8 +31,8 @@ static const char *index_html =
 "</html>";
 
 static esp_err_t get_handler(httpd_req_t *req) {
-    httpd_resp_set_type(req, "text/html");
-    return httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
+	httpd_resp_set_type(req, "text/html");
+	return httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
 }
 
 void start_http_server(void) {

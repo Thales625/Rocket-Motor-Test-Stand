@@ -11,8 +11,8 @@ void circular_buffer_init(circular_buffer_t *buffer) {
 	buffer->head = 0;
 }
 
-void circular_buffer_write(circular_buffer_t *buffer, uint32_t value) {
-	ESP_LOGI(TAG, "write buffer");
+void circular_buffer_write(circular_buffer_t *buffer, int32_t value) {
+	ESP_LOGI(TAG, "write data");
 	// disables interrupts to avoid race condition
 	portENTER_CRITICAL(&buffer_mux);
 
@@ -24,7 +24,7 @@ void circular_buffer_write(circular_buffer_t *buffer, uint32_t value) {
 	portEXIT_CRITICAL(&buffer_mux);
 }
 
-bool circular_buffer_read(circular_buffer_t *buffer, circular_reader_t *reader, uint32_t *out) {
+bool circular_buffer_read(circular_buffer_t *buffer, circular_reader_t *reader, int32_t *out) {
 	// safe read without blocking the writer
 	portENTER_CRITICAL(&buffer_mux);
 
