@@ -3,9 +3,6 @@ import matplotlib.animation as animation
 from collections import deque
 
 def run_plot(ser, tare, calib_factor):
-	# consts
-	G = 9.80665
-
 	# params
 	MAX_POINTS = 100
 
@@ -16,7 +13,8 @@ def run_plot(ser, tare, calib_factor):
 	# matplotlib
 	fig, ax = plt.subplots()
 	line, = ax.plot(data)
-	ax.set_ylim(-1000, 1000000)
+	# ax.set_ylim(-10, 100000)
+	ax.set_ylim(-10, 30)
 
 	# run
 	def update(frame):
@@ -24,6 +22,7 @@ def run_plot(ser, tare, calib_factor):
 			try:
 				z = int(ser.readline().decode().strip())
 				force = (z - tare) * calib_factor
+				print(f"{force} kg")
 				data.append(force)
 			except ValueError:
 				pass

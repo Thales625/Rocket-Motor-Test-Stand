@@ -18,6 +18,7 @@ def calibrate(ser, tare, calib_mass):
 	while True:
 		try:
 			z = int(ser.readline().decode().strip()) # serial read
+			print(z)
 			return calib_mass * G / (z - tare)
 		except ValueError:
 			pass

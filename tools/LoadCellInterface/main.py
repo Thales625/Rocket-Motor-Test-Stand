@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 	else: # plot (or default fallback)
 		if settings["calib_factor"] is None:
-			raise Exception("Fator de calibração não encontrado.\nRun python main.py calibrate -p PORT -b BAUD -m MASS")
+			raise Exception("Fator de calibração não encontrado.\nRun: python main.py calibrate -p PORT -b BAUD -m MASS")
 
 		from plot import run_plot
 

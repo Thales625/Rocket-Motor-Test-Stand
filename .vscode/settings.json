@@ -10,7 +10,8 @@
 		"message_buffer.h": "c",
 		"task.h": "c",
 		"inttypes.h": "c",
-		"freertos.h": "c"
+		"freertos.h": "c",
+		"esp_timer.h": "c"
 	},
 	"idf.port": "/dev/ttyUSB0",
 	"idf.portWin": "COM5"

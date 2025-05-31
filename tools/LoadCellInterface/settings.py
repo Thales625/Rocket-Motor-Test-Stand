@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-	raise Exception("Run python main.py -p PORT -b BAUD")
+	raise Exception("Run: python main.py -p PORT -b BAUD")
 
 import json
 from os.path import exists
