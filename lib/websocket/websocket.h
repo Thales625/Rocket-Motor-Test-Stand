@@ -5,5 +5,6 @@
 #define WS_BUFFER_SIZE 128
 #define WS_MAX_CLIENTS 8
 
-esp_err_t websocket_broadcast(const char *data);
 void websocket_register_uri(httpd_handle_t server);
+esp_err_t websocket_broadcast(const char *data);
+esp_err_t websocket_stop(void);

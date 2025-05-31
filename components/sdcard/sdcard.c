@@ -18,7 +18,6 @@
 static const char *TAG = "sdcard";
 
 static sdmmc_card_t *card;
-static FILE *file;
 
 esp_err_t sdcard_init(void) {
 	esp_err_t ret;
@@ -82,37 +81,54 @@ esp_err_t sdcard_list_files(void) {
 	return ESP_OK;
 }
 
-esp_err_t sdcard_read_file(const char *path) {
+esp_err_t sdcard_open_file(const char *path, const char *mode, FILE **file_out) {
+	if (file_out == NULL) return ESP_FAIL;
+
 	char full_path[128];
 	snprintf(full_path, sizeof(full_path), SD_MOUNT_POINT"/%s", path);
 
-	FILE *f = fopen(full_path, "r");
-	if (!f) {
-		ESP_LOGE(TAG, "Failed to open file: %s\n", path);
-		return ESP_FAIL;
-	}
+	*file_out = fopen(full_path, mode);
 
-	ESP_LOGI(TAG, "Reading file: %s\n", path);
-
-	char line[128];
-	while (fgets(line, sizeof(line), f)) {
-		printf("%s", line);
-	}
-
-	fclose(f);
-
+	if ((*file_out) == NULL) return ESP_FAIL;
 	return ESP_OK;
 }
 
+esp_err_t sdcard_read_file(const char *path) {
+	FILE *f_ptr;
+	if (sdcard_open_file(path, "r", &f_ptr) == ESP_FAIL) {
+		ESP_LOGE(TAG, "Failed to open file: %s", path);
+		return ESP_FAIL;
+	}
+
+	ESP_LOGI(TAG, "Reading file: %s", path);
+
+	char line[128];
+	while (fgets(line, sizeof(line), f_ptr)) {
+		printf("%s", line);
+	}
+
+	if (sdcard_close_file(f_ptr) == ESP_FAIL) {
+		ESP_LOGE(TAG, "Failed to close file: %s", path);
+		return ESP_FAIL;
+	}
+	return ESP_OK;
+}
+
+esp_err_t sdcard_write(const char *data, FILE *file_ptr) {
+	return fprintf(file_ptr, "%s\n", data) == 0 ? ESP_OK : ESP_FAIL;
+}
+
 esp_err_t sdcard_clear_file(const char *path) {
-	char full_path[128];
-	snprintf(full_path, sizeof(full_path), SD_MOUNT_POINT"/%s", path);
+	FILE *f_ptr;
+	if (sdcard_open_file(path, "w", &f_ptr) == ESP_FAIL) {
+		ESP_LOGE(TAG, "Failed to open file: %s", path);
+		return ESP_FAIL;
+	}
 
-	FILE *f = fopen(full_path, "w");
-	if (!f) return ESP_FAIL;
-
-	fclose(f);
-
+	if (sdcard_close_file(f_ptr) == ESP_FAIL) {
+		ESP_LOGE(TAG, "Failed to close file: %s", path);
+		return ESP_FAIL;
+	}
 	return ESP_OK;
 }
 
@@ -126,25 +142,9 @@ esp_err_t sdcard_delete_file(const char *path) {
 	return ESP_FAIL;
 }
 
-// ========Continuos writing========
-esp_err_t sdcard_open_file(const char *path, const char *mode) {
-	char full_path[128];
-	snprintf(full_path, sizeof(full_path), SD_MOUNT_POINT"/%s", path);
-
-	file = fopen(full_path, mode);
-
-	if (!file) return ESP_FAIL;
-	return ESP_OK;
+esp_err_t sdcard_close_file(FILE* file_ptr) {
+	return fclose(file_ptr) == 0 ? ESP_OK : ESP_FAIL;
 }
-
-esp_err_t sdcard_write(const char *data) {
-	return fprintf(file, "%s\n", data) == 0 ? ESP_OK : ESP_FAIL;
-}
-
-esp_err_t sdcard_close_file(void) {
-	return fclose(file) == 0 ? ESP_OK : ESP_FAIL;
-}
-// =================================
 
 esp_err_t sdcard_umount(void) {
 	return esp_vfs_fat_sdcard_unmount(SD_MOUNT_POINT, card);

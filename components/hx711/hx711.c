@@ -47,7 +47,7 @@
 #define CHECK_ARG(VAL) do { if (!(VAL)) return ESP_ERR_INVALID_ARG; } while (0)
 
 #if HELPER_TARGET_IS_ESP32
-static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+static portMUX_TYPE running_mux = portMUX_INITIALIZER_UNLOCKED;
 #endif
 
 #ifndef BIT64
@@ -56,7 +56,7 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain) {
 #if HELPER_TARGET_IS_ESP32
-    portENTER_CRITICAL(&mux);
+    portENTER_CRITICAL(&running_mux);
 #elif HELPER_TARGET_IS_ESP8266
     portENTER_CRITICAL();
 #endif
@@ -80,7 +80,7 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain) 
     }
 
 #if HELPER_TARGET_IS_ESP32
-    portEXIT_CRITICAL(&mux);
+    portEXIT_CRITICAL(&running_mux);
 #elif HELPER_TARGET_IS_ESP8266
     portEXIT_CRITICAL();
 #endif
@@ -106,7 +106,11 @@ esp_err_t hx711_init(hx711_t *dev) {
     conf.mode = GPIO_MODE_OUTPUT;
     CHECK(gpio_config(&conf));
 
+    // CHECK(hx711_power_down(dev, true));
+
     CHECK(hx711_power_down(dev, false));
+
+    vTaskDelay(pdMS_TO_TICKS(500));
 
     return hx711_set_gain(dev, dev->gain);
 }

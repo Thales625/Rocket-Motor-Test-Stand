@@ -37,3 +37,37 @@ void wifi_init_softap(void) {
 
 	ESP_LOGI(TAG, "Wi-Fi AP started. SSID:%s Password:%s", WIFI_SSID, WIFI_PASS);
 }
+
+void wifi_stop_softap(void) {
+    esp_err_t err;
+
+    err = esp_wifi_stop();
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Wi-Fi stopped successfully.");
+    } else if (err == ESP_ERR_WIFI_NOT_INIT) {
+        ESP_LOGI(TAG, "Wi-Fi was not initialized (no stop action needed).");
+    } else {
+        ESP_LOGE(TAG, "Failed to stop Wi-Fi: %s", esp_err_to_name(err));
+    }
+
+    // deinitialize the Wi-Fi driver
+    ESP_LOGI(TAG, "Deinitializing the Wi-Fi driver...");
+    err = esp_wifi_deinit();
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Wi-Fi driver deinitialized successfully.");
+    } else if (err == ESP_ERR_WIFI_NOT_INIT) {
+        ESP_LOGI(TAG, "Wi-Fi driver was not initialized for deinitialization.");
+    } else {
+        ESP_LOGE(TAG, "Failed to deinitialize Wi-Fi: %s", esp_err_to_name(err));
+    }
+
+    // destroy the default SoftAP network interface (netif)
+    ESP_LOGI(TAG, "Destroying default Wi-Fi AP network interface...");
+    esp_netif_t *ap_netif = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
+    if (ap_netif) {
+        esp_netif_destroy_default_wifi(ap_netif);
+        ESP_LOGI(TAG, "Default Wi-Fi AP network interface destroyed.");
+    } else {
+        ESP_LOGI(TAG, "No default Wi-Fi AP network interface found to destroy (it may have already been destroyed or never created).");
+    }
+}

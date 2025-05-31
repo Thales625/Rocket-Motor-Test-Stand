@@ -9,6 +9,8 @@
 
 static const char *TAG = "http-server";
 
+static httpd_handle_t server = NULL;
+
 static const char *index_html =
 "<!DOCTYPE html>"
 "<html>"
@@ -35,10 +37,9 @@ static esp_err_t get_handler(httpd_req_t *req) {
 	return httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
 }
 
-void start_http_server(void) {
+esp_err_t start_http_server(void) {
 	httpd_config_t config = HTTPD_DEFAULT_CONFIG();
 
-	httpd_handle_t server = NULL;
 	if (httpd_start(&server, &config) == ESP_OK) {
 		httpd_uri_t index_uri = {
 			.uri      = "/",
@@ -51,8 +52,15 @@ void start_http_server(void) {
 		// start websocket
 		websocket_register_uri(server);
 
-		ESP_LOGI(TAG, "HTTP server with WebSocket started");
-	} else {
-		ESP_LOGE(TAG, "Failed to start HTTP server");
+		ESP_LOGI(TAG, "HTTP server and WebSocket started");
+		return ESP_OK;
+	}
+	return ESP_FAIL;
+}
+
+void stop_http_server(void) {
+	if (server) {
+		httpd_stop(server);
+		server = NULL;
 	}
 }
