@@ -144,13 +144,8 @@ esp_err_t hx711_is_ready(hx711_t *dev, bool *ready) {
 }
 
 esp_err_t hx711_wait(hx711_t *dev, size_t timeout_ms) {
-    // PRECISION PROBLEM?
-    // timeout_ms *= 1000
-    // uint64_t started = esp_timer_get_time();
-    // while (esp_timer_get_time()- started < timeout_ms)
-
-    uint64_t started = esp_timer_get_time() / 1000;
-    while (esp_timer_get_time() / 1000 - started < timeout_ms) {
+    uint64_t started = esp_timer_get_time();
+    while (esp_timer_get_time() - started < timeout_ms * 1000) {
         if (!gpio_get_level(dev->dout)) return ESP_OK;
         vTaskDelay(1);
     }

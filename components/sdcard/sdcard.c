@@ -10,16 +10,11 @@
 
 #define SD_MOUNT_POINT "/sdcard"
 
-#define SD_MOSI_PIN 23
-#define SD_MISO_PIN 19
-#define SD_SCLK_PIN 18
-#define SD_CS_PIN 5
-
 static const char *TAG = "sdcard";
 
 static sdmmc_card_t *card;
 
-esp_err_t sdcard_init(void) {
+esp_err_t sdcard_init(int mosi_pin, int miso_pin, int sclk_pin, int cs_pin) {
 	esp_err_t ret;
 
 	ESP_LOGI(TAG, "Initializing SD card");
@@ -28,9 +23,9 @@ esp_err_t sdcard_init(void) {
 	host.slot = SPI2_HOST;
 
 	spi_bus_config_t bus_cfg = {
-		.mosi_io_num = SD_MOSI_PIN,
-		.miso_io_num = SD_MISO_PIN,
-		.sclk_io_num = SD_SCLK_PIN,
+		.mosi_io_num = mosi_pin,
+		.miso_io_num = miso_pin,
+		.sclk_io_num = sclk_pin,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
@@ -42,7 +37,7 @@ esp_err_t sdcard_init(void) {
 	}
 
 	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-	slot_config.gpio_cs = SD_CS_PIN;
+	slot_config.gpio_cs = cs_pin;
 	slot_config.host_id = host.slot;
 
 	esp_vfs_fat_sdmmc_mount_config_t mount_config = {

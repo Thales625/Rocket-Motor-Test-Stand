@@ -11,7 +11,9 @@
 		"task.h": "c",
 		"inttypes.h": "c",
 		"freertos.h": "c",
-		"esp_timer.h": "c"
+		"esp_timer.h": "c",
+		"hx711.h": "c",
+		"sdcard.h": "c"
 	},
 	"idf.port": "/dev/ttyUSB0",
 	"idf.portWin": "COM5"
