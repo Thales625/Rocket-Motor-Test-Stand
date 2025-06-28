@@ -17,6 +17,8 @@
 
 #define PBUTTON_PIN 2
 
+#define LED_PIN 21
+
 // #define DEBUG
 // #define LIST_FILES
 // #define READ_DATA
@@ -61,7 +63,6 @@ void capture_save_data(void *arg) {
 		sdcard_write(text, file_ptr);
 
 		#ifdef DEBUG
-		// print raw data
 		printf("%" PRIi32 "\n", data);
 		#endif
 	}
@@ -69,18 +70,29 @@ void capture_save_data(void *arg) {
 	sdcard_close_file(file_ptr);
 	sdcard_umount();
 
+	gpio_set_level(LED_PIN, 0);
+
 	vTaskDelete(NULL);
 }
 
 void app_main(void) {
 	// configure GPIO
-	gpio_config_t io_conf = {
-		.pin_bit_mask = BIT64(PBUTTON_PIN),
-		.mode = GPIO_MODE_INPUT,
-		.pull_up_en = GPIO_PULLUP_ENABLE,
-		.pull_down_en = GPIO_PULLDOWN_DISABLE,
-		.intr_type = GPIO_INTR_DISABLE
-	};
+	gpio_config_t io_conf;
+
+	// LED
+	io_conf.pin_bit_mask = BIT64(LED_PIN);
+	io_conf.mode = GPIO_MODE_OUTPUT;
+	io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+	io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+	io_conf.intr_type = GPIO_INTR_DISABLE;
+	gpio_config(&io_conf);
+
+	// Push Button
+	io_conf.pin_bit_mask = BIT64(PBUTTON_PIN);
+	io_conf.mode = GPIO_MODE_INPUT;
+	io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
+	io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+	io_conf.intr_type = GPIO_INTR_DISABLE;
 	gpio_config(&io_conf);
 
 	// initialize hx711
@@ -119,6 +131,8 @@ void app_main(void) {
 	#ifdef DEBUG
 	ESP_LOGI(TAG, "Starting data capture and save...");
 	#endif
+
+	gpio_set_level(LED_PIN, 1);
 	
 	if (sdcard_open_file(SD_FILE, "w", &file_ptr) != ESP_OK) {
 		sdcard_umount();
