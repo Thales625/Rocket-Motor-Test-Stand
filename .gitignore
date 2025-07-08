@@ -4,6 +4,7 @@ sdkconfig.old
 
 # project
 tools/*/settings.json
+tools/DataAnalysis/datalog.txt
 
 # python
 __pycache__/
