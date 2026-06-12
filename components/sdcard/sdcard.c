@@ -42,7 +42,7 @@ esp_err_t sdcard_init(int mosi_pin, int miso_pin, int sclk_pin, int cs_pin) {
 
 	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
 		.format_if_mount_failed = false,
-		.max_files = 5,
+		.max_files = 10,
 		.allocation_unit_size = 16 * 1024
 	};
 
@@ -61,15 +61,15 @@ esp_err_t sdcard_init(int mosi_pin, int miso_pin, int sclk_pin, int cs_pin) {
 esp_err_t sdcard_list_files(void) {
 	DIR *dir = opendir(SD_MOUNT_POINT);
 	if (!dir) {
-		printf("Failed to open directory mount path\n");
+		ESP_LOGE(TAG, "Failed to open directory mount path");
 		return ESP_FAIL;
 	}
 
-	printf("Listing files\n");
+	ESP_LOGI(TAG, "Listing files");
 
 	struct dirent *entry;
 	while ((entry = readdir(dir)) != NULL) {
-		printf("  %s\n", entry->d_name);
+		ESP_LOGI(TAG, "\t%s", entry->d_name);
 	}
 	closedir(dir);
 
@@ -84,7 +84,9 @@ esp_err_t sdcard_open_file(const char *path, const char *mode, FILE **file_out) 
 
 	*file_out = fopen(full_path, mode);
 
-	if ((*file_out) == NULL) return ESP_FAIL;
+	if ((*file_out) == NULL) {
+    	return ESP_FAIL;
+	}
 	return ESP_OK;
 }
 
@@ -110,7 +112,7 @@ esp_err_t sdcard_read_file(const char *path) {
 }
 
 esp_err_t sdcard_write(const char *data, FILE *file_ptr) {
-	return fprintf(file_ptr, "%s\n", data) == 0 ? ESP_OK : ESP_FAIL;
+	return fprintf(file_ptr, "%s\n", data) < 0 ? ESP_FAIL : ESP_OK;
 }
 
 esp_err_t sdcard_clear_file(const char *path) {
@@ -133,7 +135,6 @@ esp_err_t sdcard_delete_file(const char *path) {
 
 	if (remove(full_path) == 0) return ESP_OK;
 
-	// perror("Error removing file");
 	return ESP_FAIL;
 }
 
